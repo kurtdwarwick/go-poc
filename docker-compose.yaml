@@ -14,6 +14,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   adminer:
+
     container_name: adminer
     image: adminer
     ports:
@@ -23,6 +24,20 @@ services:
       ADMINER_DEFAULT_DB: organisation
     depends_on:
       - postgres
+
+  rabbitmq:
+
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
       
 volumes:
   postgres_data:
+  rabbitmq_data:

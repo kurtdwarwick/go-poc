@@ -43,7 +43,7 @@ func (dao *PostgresOrganisationDAO) GetOrganisationById(id string) (*entities.Or
 	context := context.Background()
 	organisation, error := gorm.G[entities.Organisation](dao.db).Where("id = ?", id).Limit(1).Find(context)
 
-	if error != nil || len(organisation) == 0 {
+	if error != nil {
 		return nil, error
 	}
 

@@ -17,8 +17,7 @@ type OrganisationRepository struct {
 	policyHandler *shared.PolicyHandler
 }
 
-func NewOrganisationRepository(
-	organisationDao data.OrganisationDAO) *OrganisationRepository {
+func NewOrganisationRepository(organisationDao data.OrganisationDAO) *OrganisationRepository {
 
 	policyHandler := shared.NewPolicyHandler(policies.OrganisationNamePolicy{})
 

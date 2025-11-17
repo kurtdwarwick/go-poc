@@ -8,6 +8,7 @@ import (
 	"organisation/internal/application/repositories"
 
 	"organisation/internal/infrastructure/data"
+	"organisation/internal/infrastructure/events/publishers"
 	"organisation/internal/infrastructure/http/routers"
 
 	commandHandlers "organisation/internal/application/commands/handlers"
@@ -18,18 +19,22 @@ import (
 )
 
 func main() {
+	// You would instaniate the In Memory DAO here, if you need to swap out the implementation. I.e. you could use a Mongo imoplementation or anything else, really.
 	organisationDao := data.NewPostgresOrganisationDAO()
+	// organisationDao := data.NewInMemoryOrganisationDAO()
 	organisationRepository := repositories.NewOrganisationRepository(organisationDao)
 
-	router := mux.NewRouter().StrictSlash(true)
+	eventPublisher := publishers.NewRabbitMQEventPublisher()
 
-	addOrganisationCommandHandler := commandHandlers.NewAddOrganisationCommandHandler(*organisationRepository)
+	addOrganisationCommandHandler := commandHandlers.NewAddOrganisationCommandHandler(*eventPublisher, *organisationRepository)
 	getOrganisationsQueryHandler := queryHandlers.NewGetOrganisationsQueryHandler(*organisationRepository)
 	getOrganisationByIdQueryHandler := queryHandlers.NewGetOrganisationByIdHandler(*organisationRepository)
 
 	getOrganisationByIdHandler := httpHandlers.NewGetOrganisationByIdHttpHandler(*getOrganisationByIdQueryHandler)
 	getOrganisationsHandler := httpHandlers.NewGetOrganisationsHttpHandler(*getOrganisationsQueryHandler)
 	addOrganisationHandler := httpHandlers.NewAddOrganisationHttpHandler(*addOrganisationCommandHandler)
+
+	router := mux.NewRouter().StrictSlash(true)
 
 	organisationRouter := routers.NewOrganisationHttpRouter(*getOrganisationByIdHandler, *getOrganisationsHandler, *addOrganisationHandler)
 	organisationRouter.RegisterRoutes(router)

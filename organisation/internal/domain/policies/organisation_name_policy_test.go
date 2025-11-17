@@ -5,6 +5,9 @@ import (
 	"testing"
 )
 
+// So far, this is the only necessary unit test, given that we should focus on qulity of tests, rather than quantity.
+// Unit tests should be focused on predictable behaviour (business logic) and not on implementation details.
+
 func TestOrganisationNamePolicy_Validate(t *testing.T) {
 	policy := OrganisationNamePolicy{}
 
