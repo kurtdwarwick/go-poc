@@ -24,6 +24,7 @@ func main() {
 	// organisationDao := data.NewInMemoryOrganisationDAO()
 	organisationRepository := repositories.NewOrganisationRepository(organisationDao)
 
+	// You would be able to swap this out for any other event publisher implementation.
 	eventPublisher := publishers.NewRabbitMQEventPublisher()
 
 	addOrganisationCommandHandler := commandHandlers.NewAddOrganisationCommandHandler(*eventPublisher, *organisationRepository)
