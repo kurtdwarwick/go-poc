@@ -21,27 +21,31 @@ func NewAddOrganisationCommandHandler(eventPublisher shared.EventPublisher, repo
 	}
 }
 
-func (handler *AddOrganisationCommandHandler) Handle(command commands.CreateOrganisationCommand) (*events.OrganisationAddedEvent, error) {
-	organisationId, error := handler.repository.AddOrganisation(entities.Organisation{
-		Name: command.Name,
-	})
+func (handler *AddOrganisationCommandHandler) Handle(command commands.CreateOrganisationCommand) (*string, error) {
+	organisationId, error := handler.repository.AddOrganisation(
+		entities.Organisation{
+			Name: command.Name,
+		},
+		func(organisationId string, organisation *entities.Organisation) error {
+			event := &events.OrganisationAddedEvent{
+				Id:   organisationId,
+				Name: command.Name,
+			}
+
+			error := handler.eventPublisher.Publish(event)
+
+			return error
+		})
 
 	if error != nil {
 		log.Printf("Failed to add organisation: %v", error)
 		return nil, error
 	}
 
-	event := &events.OrganisationAddedEvent{
-		Id:   *organisationId,
-		Name: command.Name,
-	}
-
-	error = handler.eventPublisher.Publish(event)
-
 	if error != nil {
 		log.Printf("Failed to publish event: %v", error)
 		return nil, error
 	}
 
-	return event, error
+	return organisationId, error
 }

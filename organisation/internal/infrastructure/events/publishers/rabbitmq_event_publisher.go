@@ -12,6 +12,7 @@ import (
 
 type RabbitMQEventPublisher struct {
 	connection *amqp.Connection
+	channel    *amqp.Channel
 }
 
 func NewRabbitMQEventPublisher() *RabbitMQEventPublisher {
@@ -21,21 +22,25 @@ func NewRabbitMQEventPublisher() *RabbitMQEventPublisher {
 		log.Panicf("Failed to connect to RabbitMQ: %v", error)
 	}
 
-	return &RabbitMQEventPublisher{
-		connection: connection,
-	}
-}
-
-func (publisher RabbitMQEventPublisher) Publish(event shared.Event) error {
-	channel, error := publisher.connection.Channel()
+	channel, error := connection.Channel()
 
 	if error != nil {
 		log.Panicf("Failed to create channel: %v", error)
 	}
 
-	defer channel.Close()
+	return &RabbitMQEventPublisher{
+		connection: connection,
+		channel:    channel,
+	}
+}
 
-	queue, error := channel.QueueDeclare(
+func (publisher *RabbitMQEventPublisher) Dispose() {
+	defer publisher.channel.Close()
+	defer publisher.connection.Close()
+}
+
+func (publisher *RabbitMQEventPublisher) Publish(event shared.Event) error {
+	queue, error := publisher.channel.QueueDeclare(
 		event.GetType(),
 		false,
 		false,
@@ -56,7 +61,7 @@ func (publisher RabbitMQEventPublisher) Publish(event shared.Event) error {
 		return error
 	}
 
-	error = channel.PublishWithContext(
+	error = publisher.channel.PublishWithContext(
 		context.Background(),
 		"",
 		queue.Name,

@@ -31,7 +31,7 @@ func (handler *AddOrganisationHttpHandler) Handle(writer http.ResponseWriter, re
 		return
 	}
 
-	event, error := handler.commandHandler.Handle(commands.CreateOrganisationCommand{
+	organisationId, error := handler.commandHandler.Handle(commands.CreateOrganisationCommand{
 		Name: organisation.Name,
 	})
 
@@ -49,6 +49,6 @@ func (handler *AddOrganisationHttpHandler) Handle(writer http.ResponseWriter, re
 	writer.Header().Set("Content-Type", "application/json")
 
 	json.NewEncoder(writer).Encode(map[string]string{
-		"id": event.Id,
+		"id": *organisationId,
 	})
 }

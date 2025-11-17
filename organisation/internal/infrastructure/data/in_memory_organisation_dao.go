@@ -35,8 +35,16 @@ func (dao *InMemoryOrganisationDAO) GetOrganisationById(id string) (*entities.Or
 	return &organisation, nil
 }
 
-func (dao *InMemoryOrganisationDAO) CreateOrganisation(organisation *entities.Organisation) error {
+func (dao *InMemoryOrganisationDAO) CreateOrganisation(
+	organisation *entities.Organisation,
+	callback func(organisationId string, organisation *entities.Organisation) error) error {
 	dao.organisations[organisation.Id] = *organisation
+
+	error := callback(organisation.Id, organisation)
+
+	if error != nil {
+		return error
+	}
 
 	return nil
 }

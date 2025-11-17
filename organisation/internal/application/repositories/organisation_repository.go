@@ -40,7 +40,9 @@ func (repository *OrganisationRepository) GetOrganisationById(id string) (*entit
 	return organisation, error
 }
 
-func (repository *OrganisationRepository) AddOrganisation(organisation entities.Organisation) (*string, error) {
+func (repository *OrganisationRepository) AddOrganisation(
+	organisation entities.Organisation,
+	callback func(organisationId string, organisation *entities.Organisation) error) (*string, error) {
 	organisationId := uuid.New().String()
 
 	error := repository.policyHandler.Validate(organisation)
@@ -51,7 +53,7 @@ func (repository *OrganisationRepository) AddOrganisation(organisation entities.
 
 	organisation.Id = organisationId
 
-	error = repository.organisationDao.CreateOrganisation(&organisation)
+	error = repository.organisationDao.CreateOrganisation(&organisation, callback)
 
 	return &organisationId, error
 }

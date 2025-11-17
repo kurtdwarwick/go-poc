@@ -27,7 +27,9 @@ func main() {
 	// You would be able to swap this out for any other event publisher implementation.
 	eventPublisher := publishers.NewRabbitMQEventPublisher()
 
-	addOrganisationCommandHandler := commandHandlers.NewAddOrganisationCommandHandler(*eventPublisher, *organisationRepository)
+	defer eventPublisher.Dispose()
+
+	addOrganisationCommandHandler := commandHandlers.NewAddOrganisationCommandHandler(eventPublisher, *organisationRepository)
 	getOrganisationsQueryHandler := queryHandlers.NewGetOrganisationsQueryHandler(*organisationRepository)
 	getOrganisationByIdQueryHandler := queryHandlers.NewGetOrganisationByIdHandler(*organisationRepository)
 

@@ -54,10 +54,26 @@ func (dao *PostgresOrganisationDAO) GetOrganisationById(id string) (*entities.Or
 	return &organisation[0], nil
 }
 
-func (dao *PostgresOrganisationDAO) CreateOrganisation(organisation *entities.Organisation) error {
+func (dao *PostgresOrganisationDAO) CreateOrganisation(
+	organisation *entities.Organisation,
+	callback func(organisationId string, organisation *entities.Organisation) error) error {
 	context := context.Background()
 
-	error := gorm.G[entities.Organisation](dao.db).Create(context, organisation)
+	error := dao.db.Transaction(func(tx *gorm.DB) error {
+		error := gorm.G[entities.Organisation](dao.db).Create(context, organisation)
+
+		if error != nil {
+			return error
+		}
+
+		error = callback(organisation.Id, organisation)
+
+		if error != nil {
+			return error
+		}
+
+		return nil
+	})
 
 	if error != nil {
 		return error
