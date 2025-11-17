@@ -1,0 +1,29 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*_test
+
+# Output of `go build`
+# You may want to ignore this if your build output is always in a specific directory
+# For example, if you build into a `bin/` directory:
+# bin/
+
+# Dependencies
+# This is usually handled by `go mod tidy` and `go mod vendor`
+# but if you have a `vendor/` directory, you might want to ignore it
+# vendor/
+
+# Logs
+*.log
+
+# Editor-specific files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*~
