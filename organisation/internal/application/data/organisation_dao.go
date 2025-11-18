@@ -7,4 +7,5 @@ type OrganisationDAO interface {
 	GetOrganisationById(id string) (*entities.Organisation, error)
 
 	CreateOrganisation(organisation *entities.Organisation, callback func(organisationId string, organisation *entities.Organisation) error) error
+	UpdateOrganisation(organisation *entities.Organisation, callback func(organisation *entities.Organisation) error) error
 }

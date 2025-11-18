@@ -1,7 +1,8 @@
 package repositories
 
 import (
-	"organisation/internal/domain/data"
+	"errors"
+	"organisation/internal/application/data"
 	"organisation/internal/domain/entities"
 	"organisation/internal/domain/policies"
 
@@ -19,7 +20,10 @@ type OrganisationRepository struct {
 
 func NewOrganisationRepository(organisationDao data.OrganisationDAO) *OrganisationRepository {
 
-	policyHandler := shared.NewPolicyHandler(policies.OrganisationNamePolicy{})
+	policyHandler := shared.NewPolicyHandler(
+		policies.OrganisationLegalNamePolicy{},
+		policies.OrganisationTradingNamePolicy{},
+		policies.OrganisationWebsitePolicy{})
 
 	return &OrganisationRepository{
 		organisationDao: organisationDao,
@@ -56,4 +60,25 @@ func (repository *OrganisationRepository) AddOrganisation(
 	error = repository.organisationDao.CreateOrganisation(&organisation, callback)
 
 	return &organisationId, error
+}
+
+func (repository *OrganisationRepository) ChangeOrganisation(
+	organisation *entities.Organisation,
+	callback func(organisation *entities.Organisation) error) error {
+
+	if organisation.Id == "" {
+		return errors.New("organisation id is required")
+	}
+
+	organisation, error := repository.organisationDao.GetOrganisationById(organisation.Id)
+
+	if error != nil {
+		return error
+	}
+
+	if organisation == nil {
+		return errors.New("organisation not found")
+	}
+
+	return repository.organisationDao.UpdateOrganisation(organisation, callback)
 }

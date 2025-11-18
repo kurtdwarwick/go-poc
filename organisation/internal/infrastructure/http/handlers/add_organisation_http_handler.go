@@ -8,7 +8,9 @@ import (
 )
 
 type AddOrganisationHttpDto struct {
-	Name string `json:"name"`
+	LegalName   string `json:"legalName"`
+	TradingName string `json:"tradingName"`
+	Website     string `json:"website"`
 }
 
 type AddOrganisationHttpHandler struct {
@@ -32,7 +34,9 @@ func (handler *AddOrganisationHttpHandler) Handle(writer http.ResponseWriter, re
 	}
 
 	organisationId, error := handler.commandHandler.Handle(commands.CreateOrganisationCommand{
-		Name: organisation.Name,
+		LegalName:   organisation.LegalName,
+		TradingName: organisation.TradingName,
+		Website:     organisation.Website,
 	})
 
 	if error != nil {

@@ -48,3 +48,11 @@ func (dao *InMemoryOrganisationDAO) CreateOrganisation(
 
 	return nil
 }
+
+func (dao *InMemoryOrganisationDAO) UpdateOrganisation(
+	organisation *entities.Organisation,
+	callback func(organisation *entities.Organisation) error) error {
+	dao.organisations[organisation.Id] = *organisation
+
+	return callback(organisation)
+}

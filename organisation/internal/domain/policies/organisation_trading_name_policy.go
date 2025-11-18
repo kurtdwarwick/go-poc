@@ -1,0 +1,22 @@
+package policies
+
+import (
+	"errors"
+	"organisation/internal/domain/entities"
+)
+
+type OrganisationTradingNamePolicy struct{}
+
+func (policy OrganisationTradingNamePolicy) Validate(value any) error {
+	organisation, ok := value.(entities.Organisation)
+
+	if !ok {
+		return errors.New("value is not an organisation")
+	}
+
+	if organisation.TradingName == "" {
+		return errors.New("organisation trading name is required")
+	}
+
+	return nil
+}

@@ -4,5 +4,7 @@ import "shared"
 
 type Organisation struct {
 	shared.Entity
-	Name string
+	LegalName   string
+	TradingName string
+	Website     *string
 }

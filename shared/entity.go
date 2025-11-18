@@ -1,5 +1,5 @@
 package shared
 
 type Entity struct {
-	Id string
+	Id string `gorm:"primaryKey"`
 }

@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"organisation/internal/application/queries"
 	"organisation/internal/application/repositories"
 	"organisation/internal/domain/entities"
-	"organisation/internal/domain/queries"
 )
 
 type GetOrganisationByIdHandler struct {

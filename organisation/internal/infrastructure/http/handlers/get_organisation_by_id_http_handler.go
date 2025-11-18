@@ -3,22 +3,26 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"organisation/internal/application/queries"
 	"organisation/internal/application/queries/handlers"
 	"organisation/internal/domain/entities"
-	"organisation/internal/domain/queries"
 
 	"github.com/gorilla/mux"
 )
 
 type GetOrganisationByIdHttpDto struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
+	Id          string  `json:"id"`
+	LegalName   string  `json:"legalName"`
+	TradingName string  `json:"tradingName"`
+	Website     *string `json:"website"`
 }
 
 func NewGetOrganisationByIdHttpDto(organisation entities.Organisation) GetOrganisationByIdHttpDto {
 	return GetOrganisationByIdHttpDto{
-		Id:   organisation.Id,
-		Name: organisation.Name,
+		Id:          organisation.Id,
+		LegalName:   organisation.LegalName,
+		TradingName: organisation.TradingName,
+		Website:     organisation.Website,
 	}
 }
 

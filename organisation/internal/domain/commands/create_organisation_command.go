@@ -1,5 +1,7 @@
 package commands
 
 type CreateOrganisationCommand struct {
-	Name string
+	LegalName   string
+	TradingName string
+	Website     string
 }

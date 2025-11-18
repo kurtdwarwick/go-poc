@@ -66,13 +66,33 @@ func (dao *PostgresOrganisationDAO) CreateOrganisation(
 			return error
 		}
 
-		error = callback(organisation.Id, organisation)
+		return callback(organisation.Id, organisation)
+	})
+
+	if error != nil {
+		return error
+	}
+
+	return nil
+}
+
+func (dao *PostgresOrganisationDAO) UpdateOrganisation(
+	organisation *entities.Organisation,
+	callback func(organisation *entities.Organisation) error) error {
+	context := context.Background()
+
+	error := dao.db.Transaction(func(tx *gorm.DB) error {
+		rows, error := gorm.G[entities.Organisation](tx).Where("id = ?", organisation.Id).Updates(context, *organisation)
 
 		if error != nil {
 			return error
 		}
 
-		return nil
+		if rows == 0 {
+			return errors.New("organisation not found")
+		}
+
+		return callback(organisation)
 	})
 
 	if error != nil {

@@ -24,12 +24,16 @@ func NewAddOrganisationCommandHandler(eventPublisher shared.EventPublisher, repo
 func (handler *AddOrganisationCommandHandler) Handle(command commands.CreateOrganisationCommand) (*string, error) {
 	organisationId, error := handler.repository.AddOrganisation(
 		entities.Organisation{
-			Name: command.Name,
+			LegalName:   command.LegalName,
+			TradingName: command.TradingName,
+			Website:     &command.Website,
 		},
 		func(organisationId string, organisation *entities.Organisation) error {
 			event := &events.OrganisationAddedEvent{
-				Id:   organisationId,
-				Name: command.Name,
+				Id:          organisationId,
+				LegalName:   command.LegalName,
+				TradingName: command.TradingName,
+				Website:     command.Website,
 			}
 
 			error := handler.eventPublisher.Publish(event)

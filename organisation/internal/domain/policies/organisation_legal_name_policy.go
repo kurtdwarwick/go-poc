@@ -5,17 +5,17 @@ import (
 	"organisation/internal/domain/entities"
 )
 
-type OrganisationNamePolicy struct{}
+type OrganisationLegalNamePolicy struct{}
 
-func (policy OrganisationNamePolicy) Validate(value any) error {
+func (policy OrganisationLegalNamePolicy) Validate(value any) error {
 	organisation, ok := value.(entities.Organisation)
 
 	if !ok {
 		return errors.New("value is not an organisation")
 	}
 
-	if organisation.Name == "" {
-		return errors.New("organisation name is required")
+	if organisation.LegalName == "" {
+		return errors.New("organisation legal name is required")
 	}
 
 	return nil

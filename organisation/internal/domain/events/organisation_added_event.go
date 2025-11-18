@@ -1,8 +1,10 @@
 package events
 
 type OrganisationAddedEvent struct {
-	Id   string
-	Name string
+	Id          string
+	LegalName   string
+	TradingName string
+	Website     string
 }
 
 func (event OrganisationAddedEvent) GetType() string {
